@@ -1,27 +1,25 @@
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { OnModuleInit, Scope } from '@nestjs/common';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway()
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection{
+  @WebSocketServer() 
+  // tiene la información de todos los clientes conectados
+  private server: Server;
 
-  @WebSocketServer() io: Server
+  afterInit() {
+    console.log("Inicializado")
+  }
 
   handleConnection(client: any, ...args: any[]) {
-    console.log(`Bienvenido ${client.id}`)
-    // return `Bienvenido ${client.id}`
-  }
-  handleDisconnect(client: any) {
-    return "Vuelva pronto";
+    client.emit('pong', "Bienvenido al canal")
   }
 
-  afterInit(server: any) {
-    console.log('Inicializado');
+  @SubscribeMessage('ping')
+  handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: any): void {
+    console.log(`${client.id}: ${data}`);
+    client.emit('pong', "Bienvenido");
   }
 
-  @SubscribeMessage("ping")
-  handleMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    const id = client.id;
-    console.log(`${id}: ${data}`)
-    return data;
-  }
 }
