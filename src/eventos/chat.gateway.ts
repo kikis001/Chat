@@ -21,5 +21,4 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection{
     console.log(`${client.id}: ${data}`);
     client.emit('pong', "Bienvenido");
   }
-
 }
