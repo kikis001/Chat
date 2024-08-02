@@ -3,6 +3,7 @@ import { ConfigService, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from 'pg';
 import config from 'src/config';
+import { User } from 'src/users/entities/user.entity';
 
 @Global()
 @Module({
@@ -17,8 +18,8 @@ import config from 'src/config';
           username: user,
           password,
           database: dbName,
-          synchronize: false,
-          autoLoadEntities: true,
+          synchronize: true,
+          entities: [User]
         };
       },
       inject: [config.KEY],

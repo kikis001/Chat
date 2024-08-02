@@ -1,4 +1,4 @@
-import { Role } from "src/auth/models/Roles";
+import { Role } from "src/auth/models/roles.model";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

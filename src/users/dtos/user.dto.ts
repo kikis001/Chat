@@ -1,18 +1,23 @@
 import { PartialType } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { Role } from "src/auth/models/roles.model";
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string
+  readonly password: string
+
+  @IsNotEmpty()
+  @IsString()
+  readonly role: Role 
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
