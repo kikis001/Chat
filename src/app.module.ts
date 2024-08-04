@@ -8,6 +8,8 @@ import { enviroments } from './enviroments';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import config from './config';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [EventosModule, DatabaseModule, ConfigModule.forRoot({
@@ -16,6 +18,11 @@ import config from './config';
     isGlobal: true
   }), UsersModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }
+  ],
 })
 export class AppModule {}

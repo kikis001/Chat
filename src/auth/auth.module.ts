@@ -5,10 +5,13 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import config from 'src/config';
 import { ConfigType } from '@nestjs/config';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   imports: [UsersModule, JwtModule.registerAsync( {
     inject: [config.KEY],
     useFactory: (configService: ConfigType<typeof config>) => {
@@ -18,7 +21,7 @@ import { ConfigType } from '@nestjs/config';
           expiresIn: '10d',
         },
       }
-    }
+    },
   })]
 })
 export class AuthModule {}

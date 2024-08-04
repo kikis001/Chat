@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,15 +11,16 @@ export class UsersService {
 
   constructor(@InjectRepository(User) private userRepo: Repository<User> ) {}
 
-  async findByEmail(email: string) {
-    const user = await this.userRepo.findOne({ where: { email }})
-    if(!user) {
-      throw new NotFoundException('User not found')
-    }
-    return user;
+  findByEmail(email: string) {
+    return this.userRepo.findOne({ where: { email }})
   }
 
   async create(data: CreateUserDto) {
+    const email = data.email;
+    const userExists = await this.userRepo.findOneBy({email})
+    if(userExists){
+      throw new InternalServerErrorException('Ha ocurrido algo inesperado')
+    }
     const newUser = this.userRepo.create(data);
     const hashPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashPassword;
